@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { validateListingInput } from "@/lib/listings";
+import { validateListingInput, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/lib/listings";
 import { queryListings } from "@/lib/listings-query";
 
 export async function GET(request: Request) {
@@ -9,6 +9,10 @@ export async function GET(request: Request) {
   const graduatingSoon = searchParams.get("graduatingSoon") === "true";
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
+  const takeParam = searchParams.get("take");
+  const take = takeParam
+    ? Math.min(Math.max(Number(takeParam), 1), MAX_PAGE_SIZE)
+    : DEFAULT_PAGE_SIZE;
 
   if (lat !== null && lng !== null) {
     const latNum = Number(lat);
@@ -28,11 +32,12 @@ export async function GET(request: Request) {
     const listings = await queryListings({
       graduatingSoon,
       near: { lat: latNum, lng: lngNum, radiusKm },
+      take,
     });
     return NextResponse.json({ listings });
   }
 
-  const listings = await queryListings({ graduatingSoon });
+  const listings = await queryListings({ graduatingSoon, take });
   return NextResponse.json({ listings });
 }
 

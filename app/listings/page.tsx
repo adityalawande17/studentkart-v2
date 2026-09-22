@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { queryListings } from "@/lib/listings-query";
+import { DEFAULT_PAGE_SIZE } from "@/lib/listings";
 import { ListingCard } from "./listing-card";
 import { SignOutButton } from "./sign-out-button";
 import { NearMeButton } from "./near-me-button";
@@ -25,7 +26,7 @@ export default async function ListingsPage({
     showGraduatingOnly
       ? Promise.resolve([])
       : queryListings({ graduatingSoon: true, near, take: 8 }),
-    queryListings({ graduatingSoon: showGraduatingOnly, near }),
+    queryListings({ graduatingSoon: showGraduatingOnly, near, take: DEFAULT_PAGE_SIZE }),
   ]);
 
   return (

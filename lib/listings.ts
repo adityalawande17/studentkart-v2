@@ -1,6 +1,8 @@
 export const CATEGORIES = ["furniture", "appliances", "textbooks", "electronics", "other"] as const;
 export const CONDITIONS = ["new", "like_new", "good", "fair", "poor"] as const;
 export const DEFAULT_RADIUS_KM = 5;
+export const DEFAULT_PAGE_SIZE = 60;
+export const MAX_PAGE_SIZE = 200;
 
 export type ListingInput = {
   title: string;
