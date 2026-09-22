@@ -2,17 +2,37 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { validateListingInput } from "@/lib/listings";
+import { queryListings } from "@/lib/listings-query";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const graduatingSoon = searchParams.get("graduatingSoon") === "true";
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
 
-  const listings = await prisma.listing.findMany({
-    where: graduatingSoon ? { isGraduatingSoon: true } : undefined,
-    include: { photos: true, seller: { select: { name: true } } },
-    orderBy: { createdAt: "desc" },
-  });
+  if (lat !== null && lng !== null) {
+    const latNum = Number(lat);
+    const lngNum = Number(lng);
+    const radiusKm = searchParams.get("radiusKm")
+      ? Number(searchParams.get("radiusKm"))
+      : undefined;
 
+    if (
+      !Number.isFinite(latNum) ||
+      !Number.isFinite(lngNum) ||
+      (radiusKm !== undefined && !Number.isFinite(radiusKm))
+    ) {
+      return NextResponse.json({ error: "Invalid lat/lng/radiusKm" }, { status: 400 });
+    }
+
+    const listings = await queryListings({
+      graduatingSoon,
+      near: { lat: latNum, lng: lngNum, radiusKm },
+    });
+    return NextResponse.json({ listings });
+  }
+
+  const listings = await queryListings({ graduatingSoon });
   return NextResponse.json({ listings });
 }
 

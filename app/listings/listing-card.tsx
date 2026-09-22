@@ -9,6 +9,7 @@ type ListingCardData = {
   isGraduatingSoon: boolean;
   photos: { url: string }[];
   seller: { name: string };
+  distanceM?: number | null;
 };
 
 export function ListingCard({ listing }: { listing: ListingCardData }) {
@@ -40,6 +41,11 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           ₹{listing.price} · {listing.condition.replace("_", " ")}
         </span>
         <span className="text-xs text-neutral-500">by {listing.seller.name}</span>
+        {listing.distanceM != null && (
+          <span className="text-xs text-neutral-500">
+            {(listing.distanceM / 1000).toFixed(1)} km away
+          </span>
+        )}
       </div>
     </Link>
   );

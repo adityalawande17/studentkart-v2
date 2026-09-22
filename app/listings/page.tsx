@@ -1,32 +1,31 @@
 import Link from "next/link";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { queryListings } from "@/lib/listings-query";
 import { ListingCard } from "./listing-card";
 import { SignOutButton } from "./sign-out-button";
+import { NearMeButton } from "./near-me-button";
 
 export default async function ListingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ graduatingSoon?: string }>;
+  searchParams: Promise<{ graduatingSoon?: string; lat?: string; lng?: string; radiusKm?: string }>;
 }) {
   const session = await auth();
-  const { graduatingSoon } = await searchParams;
-  const showGraduatingOnly = graduatingSoon === "true";
+  const sp = await searchParams;
+  const showGraduatingOnly = sp.graduatingSoon === "true";
+
+  const lat = sp.lat ? Number(sp.lat) : undefined;
+  const lng = sp.lng ? Number(sp.lng) : undefined;
+  const radiusKm = sp.radiusKm ? Number(sp.radiusKm) : undefined;
+  const nearActive = lat !== undefined && lng !== undefined && Number.isFinite(lat) && Number.isFinite(lng);
+
+  const near = nearActive ? { lat: lat!, lng: lng!, radiusKm } : undefined;
 
   const [graduatingListings, listings] = await Promise.all([
     showGraduatingOnly
       ? Promise.resolve([])
-      : prisma.listing.findMany({
-          where: { isGraduatingSoon: true },
-          include: { photos: true, seller: { select: { name: true } } },
-          orderBy: { createdAt: "desc" },
-          take: 8,
-        }),
-    prisma.listing.findMany({
-      where: showGraduatingOnly ? { isGraduatingSoon: true } : undefined,
-      include: { photos: true, seller: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
+      : queryListings({ graduatingSoon: true, near, take: 8 }),
+    queryListings({ graduatingSoon: showGraduatingOnly, near }),
   ]);
 
   return (
@@ -78,7 +77,7 @@ export default async function ListingsPage({
       )}
 
       <section className="flex flex-col gap-3">
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
           <Link
             href="/listings"
             className={`rounded-full px-3 py-1 ${
@@ -95,11 +94,12 @@ export default async function ListingsPage({
           >
             Graduating soon
           </Link>
+          <NearMeButton active={nearActive} />
         </div>
 
         {listings.length === 0 ? (
           <div className="rounded border border-dashed p-12 text-center text-neutral-500">
-            No listings yet.
+            {nearActive ? "No listings within 5km yet." : "No listings yet."}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
