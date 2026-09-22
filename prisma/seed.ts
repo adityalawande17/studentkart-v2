@@ -3,14 +3,10 @@ import bcrypt from "bcryptjs";
 import { faker } from "@faker-js/faker";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+import { CAMPUS_LAT, CAMPUS_LNG } from "../lib/campus";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
-
-// Savitribai Phule Pune University main campus, Ganeshkhind, Pune.
-// This is the reference point the whole "5km radius" product claim is built around.
-const CAMPUS_LAT = 18.5535;
-const CAMPUS_LNG = 73.8143;
 
 const SELLER_COUNT = 50;
 const LISTING_COUNT = 5000;
