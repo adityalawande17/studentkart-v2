@@ -1,5 +1,5 @@
-const CATEGORIES = ["furniture", "appliances", "textbooks", "electronics", "other"] as const;
-const CONDITIONS = ["new", "like_new", "good", "fair", "poor"] as const;
+export const CATEGORIES = ["furniture", "appliances", "textbooks", "electronics", "other"] as const;
+export const CONDITIONS = ["new", "like_new", "good", "fair", "poor"] as const;
 
 export type ListingInput = {
   title: string;
