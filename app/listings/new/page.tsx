@@ -19,7 +19,7 @@ export default function NewListingPage() {
         isGraduatingSoon: values.isGraduatingSoon,
         lat: Number(values.lat),
         lng: Number(values.lng),
-        photoUrls: [],
+        photoUrls: values.photoUrls,
       }),
     });
 

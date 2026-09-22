@@ -55,6 +55,10 @@ export async function PATCH(
       isGraduatingSoon: input.isGraduatingSoon,
       lat: input.lat,
       lng: input.lng,
+      photos: {
+        deleteMany: {},
+        create: input.photoUrls.map((url) => ({ url })),
+      },
     },
     include: { photos: true },
   });

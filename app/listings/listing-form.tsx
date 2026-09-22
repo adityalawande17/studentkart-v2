@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CATEGORIES, CONDITIONS } from "@/lib/listings";
+import { PhotoUpload } from "./photo-upload";
 
 export type ListingFormValues = {
   title: string;
@@ -12,6 +13,7 @@ export type ListingFormValues = {
   isGraduatingSoon: boolean;
   lat: string;
   lng: string;
+  photoUrls: string[];
 };
 
 const EMPTY_VALUES: ListingFormValues = {
@@ -23,6 +25,7 @@ const EMPTY_VALUES: ListingFormValues = {
   isGraduatingSoon: false,
   lat: "",
   lng: "",
+  photoUrls: [],
 };
 
 export function ListingForm({
@@ -139,6 +142,11 @@ export function ListingForm({
           </select>
         </label>
       </div>
+
+      <PhotoUpload
+        value={values.photoUrls}
+        onChange={(urls) => update("photoUrls", urls)}
+      />
 
       <label className="flex items-center gap-2 text-sm">
         <input

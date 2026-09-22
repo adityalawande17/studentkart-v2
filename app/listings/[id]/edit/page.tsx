@@ -28,6 +28,7 @@ export default function EditListingPage() {
           isGraduatingSoon: l.isGraduatingSoon,
           lat: l.lat.toString(),
           lng: l.lng.toString(),
+          photoUrls: l.photos.map((p: { url: string }) => p.url),
         });
       })
       .catch(() => setLoadError("Failed to load listing"));
@@ -46,6 +47,7 @@ export default function EditListingPage() {
         isGraduatingSoon: values.isGraduatingSoon,
         lat: Number(values.lat),
         lng: Number(values.lng),
+        photoUrls: values.photoUrls,
       }),
     });
 

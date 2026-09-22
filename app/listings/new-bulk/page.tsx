@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CATEGORIES, CONDITIONS } from "@/lib/listings";
+import { PhotoUpload } from "../photo-upload";
 
 type Row = {
   title: string;
@@ -10,6 +11,7 @@ type Row = {
   price: string;
   category: (typeof CATEGORIES)[number];
   condition: (typeof CONDITIONS)[number];
+  photoUrls: string[];
 };
 
 const EMPTY_ROW: Row = {
@@ -18,6 +20,7 @@ const EMPTY_ROW: Row = {
   price: "",
   category: "other",
   condition: "good",
+  photoUrls: [],
 };
 
 export default function NewBulkListingsPage() {
@@ -83,7 +86,7 @@ export default function NewBulkListingsPage() {
           isGraduatingSoon: true,
           lat: Number(lat),
           lng: Number(lng),
-          photoUrls: [],
+          photoUrls: r.photoUrls,
         })),
       }),
     });
@@ -211,6 +214,10 @@ export default function NewBulkListingsPage() {
                   ))}
                 </select>
               </div>
+              <PhotoUpload
+                value={row.photoUrls}
+                onChange={(urls) => updateRow(i, { photoUrls: urls })}
+              />
             </div>
           ))}
         </div>
