@@ -14,11 +14,57 @@ enum Role {
   mess_owner
 }
 
+enum Category {
+  furniture
+  appliances
+  textbooks
+  electronics
+  other
+}
+
+enum Condition {
+  new
+  like_new
+  good
+  fair
+  poor
+}
+
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String
   role         Role
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
+  listings     Listing[]
+}
+
+model Listing {
+  id               String         @id @default(cuid())
+  sellerId         String
+  seller           User           @relation(fields: [sellerId], references: [id])
+  title            String
+  description      String
+  price            Decimal        @db.Decimal(10, 2)
+  category         Category
+  condition        Condition
+  isGraduatingSoon Boolean        @default(false)
+  lat              Float
+  lng              Float
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  photos           ListingPhoto[]
+
+  @@index([sellerId])
+}
+
+model ListingPhoto {
+  id        String   @id @default(cuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+
+  @@index([listingId])
 }
