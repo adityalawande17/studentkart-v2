@@ -86,6 +86,7 @@ model Listing {
   moderationReason String?
 
   @@index([sellerId])
+  @@index([location], type: Gist)
 }
 
 model ListingPhoto {
