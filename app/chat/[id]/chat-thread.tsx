@@ -86,7 +86,7 @@ export function ChatThread({
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <div className="flex items-center justify-between border-b pb-2 text-sm text-neutral-600">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 text-sm text-neutral-600">
         <span>
           Chatting with <strong>{otherUserName}</strong>
         </span>

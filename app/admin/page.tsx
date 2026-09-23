@@ -25,7 +25,7 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <main className="mx-auto flex max-w-4xl flex-1 flex-col gap-10 px-4 py-10">
+    <main className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col gap-10 px-4 py-10">
       <h1 className="text-2xl font-semibold">Moderation</h1>
 
       <section className="flex flex-col gap-3">
@@ -35,12 +35,15 @@ export default async function AdminPage() {
         ) : (
           <div className="flex flex-col divide-y rounded border">
             {reports.map((r) => (
-              <div key={r.id} className="flex items-center justify-between gap-4 p-3">
-                <div className="flex flex-col gap-0.5 text-sm">
+              <div
+                key={r.id}
+                className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex min-w-0 flex-col gap-0.5 text-sm">
                   <span>
                     <strong>{r.targetType}</strong>{" "}
                     {r.targetType === "listing" ? (
-                      <Link href={`/listings/${r.targetId}`} className="underline">
+                      <Link href={`/listings/${r.targetId}`} className="break-all underline">
                         {r.targetId}
                       </Link>
                     ) : (
@@ -52,7 +55,9 @@ export default async function AdminPage() {
                     reported by {r.reporter.name} ({r.reporter.email})
                   </span>
                 </div>
-                <ReportActions reportId={r.id} targetType={r.targetType} />
+                <div className="shrink-0">
+                  <ReportActions reportId={r.id} targetType={r.targetType} />
+                </div>
               </div>
             ))}
           </div>
@@ -66,8 +71,11 @@ export default async function AdminPage() {
         ) : (
           <div className="flex flex-col divide-y rounded border">
             {pendingListings.map((l) => (
-              <div key={l.id} className="flex items-center justify-between gap-4 p-3">
-                <div className="flex flex-col gap-0.5 text-sm">
+              <div
+                key={l.id}
+                className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex min-w-0 flex-col gap-0.5 text-sm">
                   <Link href={`/listings/${l.id}`} className="font-medium underline">
                     {l.title}
                   </Link>
@@ -79,7 +87,9 @@ export default async function AdminPage() {
                     by {l.seller.name} ({l.seller.email})
                   </span>
                 </div>
-                <ListingActions listingId={l.id} />
+                <div className="shrink-0">
+                  <ListingActions listingId={l.id} />
+                </div>
               </div>
             ))}
           </div>

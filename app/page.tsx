@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="mx-auto flex max-w-2xl flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
+    <main className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
       <h1 className="text-4xl font-semibold tracking-tight">StudentKart</h1>
       <p className="max-w-md text-neutral-600">
         A campus-local marketplace for students — furniture, appliances,

@@ -12,7 +12,7 @@ export default async function ConversationsPage() {
   const conversations = await getConversationsForUser(session.user.id);
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
       <h1 className="text-2xl font-semibold">Conversations</h1>
 
       {conversations.length === 0 ? (
@@ -27,15 +27,15 @@ export default async function ConversationsPage() {
               href={`/chat/${c.id}`}
               className="flex items-center justify-between gap-4 p-4 hover:bg-neutral-50"
             >
-              <div className="flex flex-col gap-0.5">
-                <span className="font-medium">{c.otherUser.name}</span>
-                <span className="text-xs text-neutral-500">{c.listing.title}</span>
+              <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="truncate font-medium">{c.otherUser.name}</span>
+                <span className="truncate text-xs text-neutral-500">{c.listing.title}</span>
                 {c.lastMessage && (
                   <span className="truncate text-sm text-neutral-600">{c.lastMessage.body}</span>
                 )}
               </div>
               {c.unreadCount > 0 && (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1.5 text-xs text-white">
+                <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-black px-1.5 text-xs text-white">
                   {c.unreadCount}
                 </span>
               )}

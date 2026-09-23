@@ -31,7 +31,7 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
     : false;
 
   return (
-    <main className="mx-auto flex h-[calc(100vh-2rem)] max-w-2xl flex-1 flex-col gap-4 px-4 py-4">
+    <main className="mx-auto flex w-full min-w-0 h-[calc(100vh-2rem)] max-w-2xl flex-1 flex-col gap-4 px-4 py-4">
       <div className="flex flex-col gap-1">
         <Link href="/chat" className="text-sm underline">
           ← All conversations

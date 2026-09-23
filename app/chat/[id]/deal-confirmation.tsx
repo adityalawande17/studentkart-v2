@@ -65,7 +65,7 @@ export function DealConfirmation({
 
   if (!dealConfirmed) {
     return (
-      <div className="flex items-center justify-between rounded border bg-neutral-50 px-3 py-2 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded border bg-neutral-50 px-3 py-2 text-sm">
         <span>
           {myConfirmed
             ? `Waiting for ${otherUserName} to confirm the deal...`
@@ -77,7 +77,7 @@ export function DealConfirmation({
           <button
             onClick={handleConfirm}
             disabled={confirming}
-            className="rounded border px-3 py-1 text-xs disabled:opacity-50"
+            className="shrink-0 rounded border px-3 py-1 text-xs disabled:opacity-50"
           >
             {confirming ? "Confirming..." : "Mark deal done"}
           </button>

@@ -103,7 +103,7 @@ export default function NewBulkListingsPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
       <div>
         <h1 className="text-2xl font-semibold">Moving out? List everything at once</h1>
         <p className="text-sm text-neutral-600">
@@ -125,12 +125,12 @@ export default function NewBulkListingsPage() {
               {locating ? "Locating..." : "Use my current location"}
             </button>
           </div>
-          <div className="flex gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <input
               type="number"
               step="any"
               placeholder="Latitude"
-              className="flex-1 rounded border px-3 py-2"
+              className="min-w-0 rounded border px-3 py-2"
               value={lat}
               onChange={(e) => setLat(e.target.value)}
               required
@@ -139,7 +139,7 @@ export default function NewBulkListingsPage() {
               type="number"
               step="any"
               placeholder="Longitude"
-              className="flex-1 rounded border px-3 py-2"
+              className="min-w-0 rounded border px-3 py-2"
               value={lng}
               onChange={(e) => setLng(e.target.value)}
               required
@@ -177,18 +177,18 @@ export default function NewBulkListingsPage() {
                 rows={2}
                 required
               />
-              <div className="flex gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <input
                   type="number"
                   min="1"
                   placeholder="Price (₹)"
-                  className="flex-1 rounded border px-3 py-2"
+                  className="rounded border px-3 py-2"
                   value={row.price}
                   onChange={(e) => updateRow(i, { price: e.target.value })}
                   required
                 />
                 <select
-                  className="flex-1 rounded border px-3 py-2"
+                  className="rounded border px-3 py-2"
                   value={row.category}
                   onChange={(e) =>
                     updateRow(i, { category: e.target.value as Row["category"] })
@@ -201,7 +201,7 @@ export default function NewBulkListingsPage() {
                   ))}
                 </select>
                 <select
-                  className="flex-1 rounded border px-3 py-2"
+                  className="rounded border px-3 py-2"
                   value={row.condition}
                   onChange={(e) =>
                     updateRow(i, { condition: e.target.value as Row["condition"] })

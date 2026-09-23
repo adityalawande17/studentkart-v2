@@ -34,7 +34,7 @@ export default function NewListingPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-lg flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full min-w-0 max-w-lg flex-1 flex-col gap-6 px-4 py-10">
       <h1 className="text-2xl font-semibold">New listing</h1>
       <ListingForm submitLabel="Create listing" onSubmit={handleSubmit} />
     </main>

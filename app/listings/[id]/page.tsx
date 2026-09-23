@@ -22,7 +22,7 @@ export default async function ListingDetailPage({
   const isOwner = session?.user?.id === listing.sellerId;
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full min-w-0 max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
       <Link href="/listings" className="text-sm underline">
         ← Back to listings
       </Link>
@@ -71,7 +71,7 @@ export default async function ListingDetailPage({
       </div>
 
       {session?.user && !isOwner && (
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
           <ChatButton listingId={listing.id} />
           <ReportButton targetType="listing" targetId={listing.id} />
         </div>

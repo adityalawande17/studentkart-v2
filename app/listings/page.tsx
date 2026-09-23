@@ -30,13 +30,13 @@ export default async function ListingsPage({
   ]);
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-1 flex-col gap-8 px-4 py-10">
-      <div className="flex items-center justify-between">
+    <main className="mx-auto flex w-full min-w-0 max-w-5xl flex-1 flex-col gap-8 px-4 py-10">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold">Listings</h1>
-        <div className="flex items-center gap-4 text-sm text-neutral-600">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-neutral-600">
           {session?.user ? (
             <>
-              <span>
+              <span className="hidden sm:inline">
                 Signed in as {session.user.email} ({session.user.role})
               </span>
               <Link href="/listings/new" className="rounded bg-black px-3 py-1.5 text-white">
@@ -59,16 +59,16 @@ export default async function ListingsPage({
       </div>
 
       {graduatingListings.length > 0 && (
-        <section className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
+        <section className="flex min-w-0 flex-col gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold text-amber-800">
               🎓 Graduating soon — grab it before it&apos;s gone
             </h2>
-            <Link href="/listings?graduatingSoon=true" className="text-sm underline">
+            <Link href="/listings?graduatingSoon=true" className="shrink-0 text-sm underline">
               See all
             </Link>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-2">
+          <div className="flex min-w-0 gap-4 overflow-x-auto pb-2">
             {graduatingListings.map((listing) => (
               <div key={listing.id} className="w-48 shrink-0">
                 <ListingCard

@@ -55,7 +55,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16">
+    <main className="mx-auto flex w-full min-w-0 max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16">
       <h1 className="text-2xl font-semibold">Create an account</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">

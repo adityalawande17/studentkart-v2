@@ -110,11 +110,11 @@ export function ListingForm({
           required
         />
       </label>
-      <div className="flex gap-4">
-        <label className="flex flex-1 flex-col gap-1 text-sm">
+      <div className="grid grid-cols-2 gap-4">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           Category
           <select
-            className="rounded border px-3 py-2"
+            className="min-w-0 rounded border px-3 py-2"
             value={values.category}
             onChange={(e) => update("category", e.target.value as ListingFormValues["category"])}
           >
@@ -125,10 +125,10 @@ export function ListingForm({
             ))}
           </select>
         </label>
-        <label className="flex flex-1 flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-col gap-1 text-sm">
           Condition
           <select
-            className="rounded border px-3 py-2"
+            className="min-w-0 rounded border px-3 py-2"
             value={values.condition}
             onChange={(e) =>
               update("condition", e.target.value as ListingFormValues["condition"])
@@ -169,24 +169,24 @@ export function ListingForm({
             {locating ? "Locating..." : "Use my current location"}
           </button>
         </div>
-        <div className="flex gap-4">
-          <label className="flex flex-1 flex-col gap-1 text-sm">
+        <div className="grid grid-cols-2 gap-4">
+          <label className="flex min-w-0 flex-col gap-1 text-sm">
             Latitude
             <input
               type="number"
               step="any"
-              className="rounded border px-3 py-2"
+              className="min-w-0 rounded border px-3 py-2"
               value={values.lat}
               onChange={(e) => update("lat", e.target.value)}
               required
             />
           </label>
-          <label className="flex flex-1 flex-col gap-1 text-sm">
+          <label className="flex min-w-0 flex-col gap-1 text-sm">
             Longitude
             <input
               type="number"
               step="any"
-              className="rounded border px-3 py-2"
+              className="min-w-0 rounded border px-3 py-2"
               value={values.lng}
               onChange={(e) => update("lng", e.target.value)}
               required
