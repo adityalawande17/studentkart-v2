@@ -45,6 +45,9 @@ export default async function ListingsPage({
               <Link href="/listings/new-bulk" className="underline">
                 Moving out? List everything
               </Link>
+              <Link href="/chat" className="underline">
+                Chats
+              </Link>
               <SignOutButton />
             </>
           ) : (

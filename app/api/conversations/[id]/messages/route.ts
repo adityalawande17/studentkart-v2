@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { getConversationForUser, getMessagesAndMarkRead } from "@/lib/conversations";
 
 export async function GET(
   _request: Request,
@@ -12,23 +12,14 @@ export async function GET(
   }
 
   const { id } = await params;
-  const conversation = await prisma.conversation.findUnique({ where: { id } });
-  if (!conversation) {
-    return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+  const access = await getConversationForUser(id, session.user.id);
+  if (!access.ok) {
+    return NextResponse.json(
+      { error: access.status === 404 ? "Conversation not found" : "Forbidden" },
+      { status: access.status }
+    );
   }
-  if (conversation.buyerId !== session.user.id && conversation.sellerId !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
-  await prisma.message.updateMany({
-    where: { conversationId: id, senderId: { not: session.user.id }, readAt: null },
-    data: { readAt: new Date() },
-  });
-
-  const messages = await prisma.message.findMany({
-    where: { conversationId: id },
-    orderBy: { createdAt: "asc" },
-  });
-
+  const messages = await getMessagesAndMarkRead(id, session.user.id);
   return NextResponse.json({ messages });
 }

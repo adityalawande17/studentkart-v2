@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { DeleteButton } from "./delete-button";
+import { ChatButton } from "./chat-button";
 
 export default async function ListingDetailPage({
   params,
@@ -62,6 +63,8 @@ export default async function ListingDetailPage({
         <p className="whitespace-pre-wrap text-neutral-800">{listing.description}</p>
         <p className="text-sm text-neutral-500">Listed by {listing.seller.name}</p>
       </div>
+
+      {session?.user && !isOwner && <ChatButton listingId={listing.id} />}
 
       {isOwner && (
         <div className="flex gap-2 border-t pt-4">

@@ -1,52 +1,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getConversationsForUser } from "@/lib/conversations";
 
 export async function GET() {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const userId = session.user.id;
 
-  const conversations = await prisma.conversation.findMany({
-    where: { OR: [{ buyerId: userId }, { sellerId: userId }] },
-    include: {
-      listing: { select: { id: true, title: true } },
-      buyer: { select: { id: true, name: true } },
-      seller: { select: { id: true, name: true } },
-      messages: { orderBy: { createdAt: "desc" }, take: 1 },
-    },
-  });
-
-  const unreadCounts = await prisma.message.groupBy({
-    by: ["conversationId"],
-    where: {
-      conversationId: { in: conversations.map((c) => c.id) },
-      senderId: { not: userId },
-      readAt: null,
-    },
-    _count: true,
-  });
-  const unreadByConversation = new Map(unreadCounts.map((u) => [u.conversationId, u._count]));
-
-  const shaped = conversations
-    .map((c) => {
-      const isBuyer = c.buyerId === userId;
-      const otherUser = isBuyer ? c.seller : c.buyer;
-      const lastMessage = c.messages[0] ?? null;
-      return {
-        id: c.id,
-        listing: c.listing,
-        otherUser,
-        lastMessage,
-        unreadCount: unreadByConversation.get(c.id) ?? 0,
-        lastActivityAt: (lastMessage?.createdAt ?? c.createdAt).toISOString(),
-      };
-    })
-    .sort((a, b) => (a.lastActivityAt < b.lastActivityAt ? 1 : -1));
-
-  return NextResponse.json({ conversations: shaped });
+  const conversations = await getConversationsForUser(session.user.id);
+  return NextResponse.json({ conversations });
 }
 
 export async function POST(request: Request) {
