@@ -24,5 +24,8 @@
     "@types/node": "^20",
     "tsx": "^4.23.15",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }
