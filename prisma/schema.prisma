@@ -30,17 +30,38 @@ enum Condition {
   poor
 }
 
+enum ModerationStatus {
+  approved
+  pending
+  rejected
+}
+
+enum ReportTargetType {
+  listing
+  user
+}
+
+enum ReportStatus {
+  open
+  actioned
+  dismissed
+}
+
 model User {
   id                    String         @id @default(cuid())
   email                 String         @unique
   passwordHash          String
   name                  String
   role                  Role
+  isAdmin               Boolean        @default(false)
   createdAt             DateTime       @default(now())
   listings              Listing[]
   conversationsAsBuyer  Conversation[] @relation("BuyerConversations")
   conversationsAsSeller Conversation[] @relation("SellerConversations")
   messages              Message[]
+  reviewsGiven          Review[]       @relation("ReviewsGiven")
+  reviewsReceived       Review[]       @relation("ReviewsReceived")
+  reports               Report[]
 }
 
 model Listing {
@@ -60,6 +81,9 @@ model Listing {
   updatedAt        DateTime                               @updatedAt
   photos           ListingPhoto[]
   conversations    Conversation[]
+  reviews          Review[]
+  moderationStatus ModerationStatus                       @default(approved)
+  moderationReason String?
 
   @@index([sellerId])
 }
@@ -75,15 +99,18 @@ model ListingPhoto {
 }
 
 model Conversation {
-  id        String    @id @default(cuid())
-  listingId String
-  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  buyerId   String
-  buyer     User      @relation("BuyerConversations", fields: [buyerId], references: [id])
-  sellerId  String
-  seller    User      @relation("SellerConversations", fields: [sellerId], references: [id])
-  createdAt DateTime  @default(now())
-  messages  Message[]
+  id                  String    @id @default(cuid())
+  listingId           String
+  listing             Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerId             String
+  buyer               User      @relation("BuyerConversations", fields: [buyerId], references: [id])
+  sellerId            String
+  seller              User      @relation("SellerConversations", fields: [sellerId], references: [id])
+  createdAt           DateTime  @default(now())
+  messages            Message[]
+  buyerConfirmedDeal  Boolean   @default(false)
+  sellerConfirmedDeal Boolean   @default(false)
+  dealConfirmedAt     DateTime?
 
   @@unique([listingId, buyerId])
   @@index([buyerId])
@@ -101,4 +128,34 @@ model Message {
   readAt         DateTime?
 
   @@index([conversationId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  raterId   String
+  rater     User     @relation("ReviewsGiven", fields: [raterId], references: [id])
+  rateeId   String
+  ratee     User     @relation("ReviewsReceived", fields: [rateeId], references: [id])
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@unique([listingId, raterId, rateeId])
+  @@index([rateeId])
+}
+
+model Report {
+  id         String           @id @default(cuid())
+  reporterId String
+  reporter   User             @relation(fields: [reporterId], references: [id])
+  targetType ReportTargetType
+  targetId   String
+  reason     String
+  status     ReportStatus     @default(open)
+  createdAt  DateTime         @default(now())
+
+  @@index([status])
+  @@index([targetType, targetId])
 }
