@@ -65,6 +65,13 @@ export async function getConversationForUser(id: string, userId: string): Promis
   return { ok: true, conversation, otherUser };
 }
 
+export async function hasReviewed(listingId: string, raterId: string, rateeId: string) {
+  const review = await prisma.review.findUnique({
+    where: { listingId_raterId_rateeId: { listingId, raterId, rateeId } },
+  });
+  return review !== null;
+}
+
 export async function getMessagesAndMarkRead(conversationId: string, userId: string) {
   await prisma.message.updateMany({
     where: { conversationId, senderId: { not: userId }, readAt: null },

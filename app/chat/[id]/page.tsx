@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { getConversationForUser, getMessagesAndMarkRead } from "@/lib/conversations";
+import { getConversationForUser, getMessagesAndMarkRead, hasReviewed } from "@/lib/conversations";
 import { ChatThread } from "./chat-thread";
+import { DealConfirmation } from "./deal-confirmation";
 
 export default async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -17,6 +18,17 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
   }
 
   const messages = await getMessagesAndMarkRead(id, session.user.id);
+  const isBuyer = access.conversation.buyerId === session.user.id;
+  const myConfirmed = isBuyer
+    ? access.conversation.buyerConfirmedDeal
+    : access.conversation.sellerConfirmedDeal;
+  const otherConfirmed = isBuyer
+    ? access.conversation.sellerConfirmedDeal
+    : access.conversation.buyerConfirmedDeal;
+  const dealConfirmed = access.conversation.dealConfirmedAt !== null;
+  const alreadyReviewed = dealConfirmed
+    ? await hasReviewed(access.conversation.listingId, session.user.id, access.otherUser.id)
+    : false;
 
   return (
     <main className="mx-auto flex h-[calc(100vh-2rem)] max-w-2xl flex-1 flex-col gap-4 px-4 py-4">
@@ -41,6 +53,14 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
           createdAt: m.createdAt.toISOString(),
           readAt: m.readAt?.toISOString() ?? null,
         }))}
+      />
+      <DealConfirmation
+        conversationId={id}
+        otherUserName={access.otherUser.name}
+        initialMyConfirmed={myConfirmed}
+        initialOtherConfirmed={otherConfirmed}
+        initialDealConfirmed={dealConfirmed}
+        initialAlreadyReviewed={alreadyReviewed}
       />
     </main>
   );
