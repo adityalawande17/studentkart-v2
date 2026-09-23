@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { validateListingInput, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/lib/listings";
 import { queryListings } from "@/lib/listings-query";
+import { moderateListingContent } from "@/lib/moderation";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -53,6 +54,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: input.error }, { status: 400 });
   }
 
+  const moderation = await moderateListingContent({
+    title: input.title,
+    description: input.description,
+    price: input.price,
+  });
+
   const listing = await prisma.listing.create({
     data: {
       sellerId: session.user.id,
@@ -64,6 +71,8 @@ export async function POST(request: Request) {
       isGraduatingSoon: input.isGraduatingSoon,
       lat: input.lat,
       lng: input.lng,
+      moderationStatus: moderation.flagged ? "pending" : "approved",
+      moderationReason: moderation.flagged ? moderation.reason : null,
       photos: {
         create: input.photoUrls.map((url) => ({ url })),
       },

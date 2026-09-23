@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { validateListingInput } from "@/lib/listings";
+import { moderateListingContent } from "@/lib/moderation";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -30,8 +31,14 @@ export async function POST(request: Request) {
     inputs.push(input);
   }
 
-  const listings = await prisma.$transaction(
+  const moderations = await Promise.all(
     inputs.map((input) =>
+      moderateListingContent({ title: input.title, description: input.description, price: input.price })
+    )
+  );
+
+  const listings = await prisma.$transaction(
+    inputs.map((input, i) =>
       prisma.listing.create({
         data: {
           sellerId: session.user.id,
@@ -43,6 +50,8 @@ export async function POST(request: Request) {
           isGraduatingSoon: true,
           lat: input.lat,
           lng: input.lng,
+          moderationStatus: moderations[i].flagged ? "pending" : "approved",
+          moderationReason: moderations[i].flagged ? moderations[i].reason : null,
           photos: {
             create: input.photoUrls.map((url) => ({ url })),
           },
