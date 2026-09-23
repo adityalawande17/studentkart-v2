@@ -23,12 +23,15 @@ export default async function ListingDetailPage({
 
   return (
     <main className="mx-auto flex w-full min-w-0 max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
-      <Link href="/listings" className="text-sm underline">
+      <Link
+        href="/listings"
+        className="w-fit text-sm font-medium text-neutral-500 hover:text-brand-700"
+      >
         ← Back to listings
       </Link>
 
       {listing.moderationStatus !== "approved" && isOwner && (
-        <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {listing.moderationStatus === "pending"
             ? "This listing is pending review and isn't visible to other users yet."
             : `This listing was rejected and isn't visible to other users.${
@@ -45,28 +48,28 @@ export default async function ListingDetailPage({
               key={photo.id}
               src={photo.url}
               alt={listing.title}
-              className="aspect-square w-full rounded object-cover"
+              className="aspect-square w-full rounded-xl object-cover shadow-sm"
             />
           ))}
         </div>
       ) : (
-        <div className="flex aspect-video items-center justify-center rounded bg-neutral-100 text-neutral-400">
+        <div className="flex aspect-video items-center justify-center rounded-xl bg-neutral-100 text-neutral-400">
           No photos
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
         {listing.isGraduatingSoon && (
-          <span className="w-fit rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+          <span className="w-fit rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">
             Graduating soon
           </span>
         )}
-        <h1 className="text-2xl font-semibold">{listing.title}</h1>
-        <p className="text-xl font-medium">₹{listing.price.toString()}</p>
-        <p className="text-sm text-neutral-600">
+        <h1 className="text-2xl font-semibold text-neutral-900">{listing.title}</h1>
+        <p className="text-2xl font-bold text-brand-700">₹{listing.price.toString()}</p>
+        <p className="text-sm capitalize text-neutral-500">
           {listing.category} · {listing.condition.replace("_", " ")}
         </p>
-        <p className="whitespace-pre-wrap text-neutral-800">{listing.description}</p>
+        <p className="whitespace-pre-wrap text-neutral-700">{listing.description}</p>
         <p className="text-sm text-neutral-500">Listed by {listing.seller.name}</p>
       </div>
 
@@ -78,10 +81,10 @@ export default async function ListingDetailPage({
       )}
 
       {isOwner && (
-        <div className="flex gap-2 border-t pt-4">
+        <div className="flex gap-2 border-t border-neutral-200 pt-4">
           <Link
             href={`/listings/${listing.id}/edit`}
-            className="rounded border px-3 py-1.5 text-sm"
+            className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
           >
             Edit
           </Link>

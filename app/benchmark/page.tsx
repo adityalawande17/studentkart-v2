@@ -26,7 +26,7 @@ export default async function BenchmarkPage() {
   return (
     <main className="mx-auto flex w-full min-w-0 max-w-3xl flex-1 flex-col gap-8 px-4 py-10">
       <div>
-        <h1 className="text-2xl font-semibold">Geospatial search benchmark</h1>
+        <h1 className="text-2xl font-semibold text-neutral-900">Geospatial search benchmark</h1>
         <p className="mt-2 text-sm text-neutral-600">
           Live comparison, run fresh on every load, of a proper indexed PostGIS
           radius query against the naive lat/lng distance filter most
@@ -39,13 +39,13 @@ export default async function BenchmarkPage() {
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-2 rounded border p-4">
-          <h2 className="font-medium">Indexed (ST_DWithin + GIST)</h2>
-          <p className="text-3xl font-semibold">{indexedWallMs.toFixed(1)} ms</p>
+        <div className="flex flex-col gap-2 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <h2 className="font-medium text-neutral-900">Indexed (ST_DWithin + GIST)</h2>
+          <p className="text-3xl font-bold text-brand-700">{indexedWallMs.toFixed(1)} ms</p>
           <p className="text-sm text-neutral-600">
             {indexedCount.toLocaleString()} listings matched
           </p>
-          <div className="mt-2 border-t pt-2 text-xs text-neutral-500">
+          <div className="mt-2 border-t border-neutral-100 pt-2 text-xs text-neutral-500">
             <p>Postgres execution time: {explain.executionTimeMs.toFixed(2)} ms</p>
             <p>
               Query plan:{" "}
@@ -62,13 +62,13 @@ export default async function BenchmarkPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 rounded border p-4">
-          <h2 className="font-medium">Naive in-app filter</h2>
-          <p className="text-3xl font-semibold">{naiveWallMs.toFixed(1)} ms</p>
+        <div className="flex flex-col gap-2 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <h2 className="font-medium text-neutral-900">Naive in-app filter</h2>
+          <p className="text-3xl font-bold text-neutral-500">{naiveWallMs.toFixed(1)} ms</p>
           <p className="text-sm text-neutral-600">
             {naiveCount.toLocaleString()} listings matched
           </p>
-          <div className="mt-2 border-t pt-2 text-xs text-neutral-500">
+          <div className="mt-2 border-t border-neutral-100 pt-2 text-xs text-neutral-500">
             <p>Fetched all {scannedCount.toLocaleString()} rows, no spatial index</p>
             <p>Distance: unweighted lat/lng degree difference (no cos(lat) correction)</p>
           </div>
@@ -84,7 +84,7 @@ export default async function BenchmarkPage() {
       </p>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-lg font-semibold text-neutral-900">
           Correctness: {totalMismatches} listing{totalMismatches === 1 ? "" : "s"} wrong at
           the boundary
         </h2>
@@ -103,7 +103,7 @@ export default async function BenchmarkPage() {
               wrongly include ones that aren&apos;t. Below are the closest-to-boundary
               cases, where that error actually flips the result.
             </p>
-            <div className="overflow-x-auto rounded border">
+            <div className="overflow-x-auto rounded-2xl border border-neutral-200 bg-white shadow-sm">
               <table className="w-full text-left text-sm">
                 <thead className="bg-neutral-50 text-xs uppercase text-neutral-500">
                   <tr>
@@ -115,21 +115,21 @@ export default async function BenchmarkPage() {
                 </thead>
                 <tbody>
                   {wronglyExcluded.slice(0, 10).map((r) => (
-                    <tr key={r.id} className="border-t">
-                      <td className="px-3 py-2 font-mono text-xs">{r.id}</td>
+                    <tr key={r.id} className="border-t border-neutral-100">
+                      <td className="px-3 py-2 font-mono text-xs text-neutral-500">{r.id}</td>
                       <td className="px-3 py-2">{r.trueDistanceKm.toFixed(3)} km</td>
                       <td className="px-3 py-2">{r.naiveDistanceKm.toFixed(3)} km</td>
-                      <td className="px-3 py-2 text-red-700">
+                      <td className="px-3 py-2 text-red-600">
                         wrongly excluded (should be in range)
                       </td>
                     </tr>
                   ))}
                   {wronglyIncluded.slice(0, 10).map((r) => (
-                    <tr key={r.id} className="border-t">
-                      <td className="px-3 py-2 font-mono text-xs">{r.id}</td>
+                    <tr key={r.id} className="border-t border-neutral-100">
+                      <td className="px-3 py-2 font-mono text-xs text-neutral-500">{r.id}</td>
                       <td className="px-3 py-2">—</td>
                       <td className="px-3 py-2">{r.naiveDistanceKm.toFixed(3)} km</td>
-                      <td className="px-3 py-2 text-red-700">
+                      <td className="px-3 py-2 text-red-600">
                         wrongly included (outside {DEFAULT_RADIUS_KM}km)
                       </td>
                     </tr>

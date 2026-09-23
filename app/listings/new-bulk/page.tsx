@@ -23,6 +23,9 @@ const EMPTY_ROW: Row = {
   photoUrls: [],
 };
 
+const inputClass =
+  "min-w-0 rounded-lg border border-neutral-200 px-3 py-2 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100";
+
 export default function NewBulkListingsPage() {
   const router = useRouter();
   const [rows, setRows] = useState<Row[]>([{ ...EMPTY_ROW }, { ...EMPTY_ROW }]);
@@ -104,23 +107,27 @@ export default function NewBulkListingsPage() {
 
   return (
     <main className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
-      <div>
-        <h1 className="text-2xl font-semibold">Moving out? List everything at once</h1>
-        <p className="text-sm text-neutral-600">
+      <div className="rounded-2xl border border-amber-200 bg-linear-to-br from-amber-50 to-orange-50 p-5">
+        <h1 className="text-2xl font-semibold text-neutral-900">
+          Moving out? List everything at once
+        </h1>
+        <p className="mt-1 text-sm text-amber-800">
           Every item here gets flagged as graduating soon and shows up in the
-          graduating-soon section on the browse page.
+          graduating-soon spotlight on the browse page.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2 rounded border p-3">
+        <div className="flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Location (shared by all items)</span>
+            <span className="text-sm font-medium text-neutral-700">
+              Location (shared by all items)
+            </span>
             <button
               type="button"
               onClick={useCurrentLocation}
               disabled={locating}
-              className="text-sm underline disabled:opacity-50"
+              className="text-sm font-medium text-brand-700 hover:underline disabled:opacity-50"
             >
               {locating ? "Locating..." : "Use my current location"}
             </button>
@@ -130,7 +137,7 @@ export default function NewBulkListingsPage() {
               type="number"
               step="any"
               placeholder="Latitude"
-              className="min-w-0 rounded border px-3 py-2"
+              className={inputClass}
               value={lat}
               onChange={(e) => setLat(e.target.value)}
               required
@@ -139,7 +146,7 @@ export default function NewBulkListingsPage() {
               type="number"
               step="any"
               placeholder="Longitude"
-              className="min-w-0 rounded border px-3 py-2"
+              className={inputClass}
               value={lng}
               onChange={(e) => setLng(e.target.value)}
               required
@@ -149,14 +156,17 @@ export default function NewBulkListingsPage() {
 
         <div className="flex flex-col gap-4">
           {rows.map((row, i) => (
-            <div key={i} className="flex flex-col gap-2 rounded border p-3">
+            <div
+              key={i}
+              className="flex flex-col gap-2 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm"
+            >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Item {i + 1}</span>
+                <span className="text-sm font-medium text-neutral-700">Item {i + 1}</span>
                 {rows.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeRow(i)}
-                    className="text-sm text-red-600 underline"
+                    className="text-sm font-medium text-red-600 hover:text-red-700"
                   >
                     Remove
                   </button>
@@ -164,14 +174,14 @@ export default function NewBulkListingsPage() {
               </div>
               <input
                 placeholder="Title"
-                className="rounded border px-3 py-2"
+                className={inputClass}
                 value={row.title}
                 onChange={(e) => updateRow(i, { title: e.target.value })}
                 required
               />
               <textarea
                 placeholder="Description"
-                className="rounded border px-3 py-2"
+                className={inputClass}
                 value={row.description}
                 onChange={(e) => updateRow(i, { description: e.target.value })}
                 rows={2}
@@ -182,13 +192,13 @@ export default function NewBulkListingsPage() {
                   type="number"
                   min="1"
                   placeholder="Price (₹)"
-                  className="rounded border px-3 py-2"
+                  className={inputClass}
                   value={row.price}
                   onChange={(e) => updateRow(i, { price: e.target.value })}
                   required
                 />
                 <select
-                  className="rounded border px-3 py-2"
+                  className={inputClass}
                   value={row.category}
                   onChange={(e) =>
                     updateRow(i, { category: e.target.value as Row["category"] })
@@ -201,7 +211,7 @@ export default function NewBulkListingsPage() {
                   ))}
                 </select>
                 <select
-                  className="rounded border px-3 py-2"
+                  className={inputClass}
                   value={row.condition}
                   onChange={(e) =>
                     updateRow(i, { condition: e.target.value as Row["condition"] })
@@ -222,7 +232,11 @@ export default function NewBulkListingsPage() {
           ))}
         </div>
 
-        <button type="button" onClick={addRow} className="w-fit rounded border px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={addRow}
+          className="w-fit rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
+        >
           + Add another item
         </button>
 
@@ -230,7 +244,7 @@ export default function NewBulkListingsPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+          className="rounded-lg bg-brand-600 px-3 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
         >
           {submitting ? "Creating listings..." : `Create ${rows.length} listings`}
         </button>

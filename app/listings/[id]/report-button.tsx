@@ -41,7 +41,7 @@ export function ReportButton({
     return (
       <button
         onClick={() => setOpen(true)}
-        className="text-sm text-red-700 underline"
+        className="text-sm font-medium text-red-600 hover:text-red-700"
       >
         Report
       </button>
@@ -49,9 +49,9 @@ export function ReportButton({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 rounded border p-3 text-sm">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 rounded-xl border border-neutral-200 bg-white p-3 text-sm shadow-sm">
       <textarea
-        className="rounded border px-2 py-1"
+        className="rounded-lg border border-neutral-200 px-2.5 py-1.5 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
         placeholder="Why are you reporting this?"
         value={reason}
         onChange={(e) => setReason(e.target.value)}
@@ -63,11 +63,15 @@ export function ReportButton({
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-red-700 px-3 py-1 text-white disabled:opacity-50"
+          className="rounded-lg bg-red-600 px-3 py-1.5 font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
         >
           {submitting ? "Submitting..." : "Submit report"}
         </button>
-        <button type="button" onClick={() => setOpen(false)} className="rounded border px-3 py-1">
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="rounded-lg border border-neutral-200 px-3 py-1.5 font-medium text-neutral-700 hover:bg-neutral-50"
+        >
           Cancel
         </button>
       </div>

@@ -65,8 +65,8 @@ export function DealConfirmation({
 
   if (!dealConfirmed) {
     return (
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded border bg-neutral-50 px-3 py-2 text-sm">
-        <span>
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm shadow-sm">
+        <span className="text-neutral-700">
           {myConfirmed
             ? `Waiting for ${otherUserName} to confirm the deal...`
             : otherConfirmed
@@ -77,7 +77,7 @@ export function DealConfirmation({
           <button
             onClick={handleConfirm}
             disabled={confirming}
-            className="shrink-0 rounded border px-3 py-1 text-xs disabled:opacity-50"
+            className="shrink-0 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
           >
             {confirming ? "Confirming..." : "Mark deal done"}
           </button>
@@ -88,22 +88,27 @@ export function DealConfirmation({
 
   if (alreadyReviewed) {
     return (
-      <p className="rounded border bg-green-50 px-3 py-2 text-sm text-green-800">
-        You&apos;ve reviewed {otherUserName}. Thanks!
+      <p className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-sm">
+        ✓ You&apos;ve reviewed {otherUserName}. Thanks!
       </p>
     );
   }
 
   return (
-    <form onSubmit={handleReviewSubmit} className="flex flex-col gap-2 rounded border p-3">
-      <span className="text-sm font-medium">Leave a review for {otherUserName}</span>
+    <form
+      onSubmit={handleReviewSubmit}
+      className="flex flex-col gap-2 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm"
+    >
+      <span className="text-sm font-medium text-neutral-900">
+        Leave a review for {otherUserName}
+      </span>
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
           <button
             key={n}
             type="button"
             onClick={() => setRating(n)}
-            className={`text-lg ${n <= rating ? "text-amber-500" : "text-neutral-300"}`}
+            className={`text-xl transition ${n <= rating ? "text-amber-400" : "text-neutral-200"}`}
             aria-label={`${n} star${n === 1 ? "" : "s"}`}
           >
             ★
@@ -111,7 +116,7 @@ export function DealConfirmation({
         ))}
       </div>
       <textarea
-        className="rounded border px-3 py-2 text-sm"
+        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
         placeholder="Optional comment"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
@@ -121,7 +126,7 @@ export function DealConfirmation({
       <button
         type="submit"
         disabled={submitting}
-        className="w-fit rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
+        className="w-fit rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
       >
         {submitting ? "Submitting..." : "Submit review"}
       </button>

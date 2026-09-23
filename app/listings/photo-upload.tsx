@@ -43,7 +43,7 @@ export function PhotoUpload({
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium">Photos</span>
+      <span className="text-sm font-medium text-neutral-700">Photos</span>
       {value.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {value.map((url) => (
@@ -52,12 +52,12 @@ export function PhotoUpload({
               <img
                 src={url}
                 alt=""
-                className="h-full w-full rounded object-cover"
+                className="h-full w-full rounded-lg object-cover shadow-sm"
               />
               <button
                 type="button"
                 onClick={() => removePhoto(url)}
-                className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white"
+                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-900 text-xs text-white shadow-sm transition hover:bg-red-600"
                 aria-label="Remove photo"
               >
                 ×
@@ -66,15 +66,19 @@ export function PhotoUpload({
           ))}
         </div>
       )}
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        multiple
-        onChange={(e) => handleFiles(e.target.files)}
-        disabled={uploading}
-        className="text-sm"
-      />
+      <label className="flex cursor-pointer flex-col items-center gap-1 rounded-lg border border-dashed border-neutral-300 px-4 py-4 text-center text-sm text-neutral-500 transition hover:border-brand-300 hover:bg-brand-50/50">
+        <span className="font-medium text-brand-700">Choose photos</span>
+        <span className="text-xs">JPEG, PNG, WebP or GIF</span>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          multiple
+          onChange={(e) => handleFiles(e.target.files)}
+          disabled={uploading}
+          className="hidden"
+        />
+      </label>
       {uploading && <span className="text-sm text-neutral-500">Uploading...</span>}
       {error && <span className="text-sm text-red-600">{error}</span>}
     </div>

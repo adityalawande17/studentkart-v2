@@ -31,14 +31,14 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
     : false;
 
   return (
-    <main className="mx-auto flex w-full min-w-0 h-[calc(100vh-2rem)] max-w-2xl flex-1 flex-col gap-4 px-4 py-4">
+    <main className="mx-auto flex h-[calc(100vh-2rem)] w-full min-w-0 max-w-2xl flex-1 flex-col gap-4 px-4 py-4">
       <div className="flex flex-col gap-1">
-        <Link href="/chat" className="text-sm underline">
+        <Link href="/chat" className="w-fit text-sm font-medium text-neutral-500 hover:text-brand-700">
           ← All conversations
         </Link>
         <Link
           href={`/listings/${access.conversation.listing.id}`}
-          className="text-sm text-neutral-600 underline"
+          className="w-fit text-sm text-neutral-500 hover:text-brand-700 hover:underline"
         >
           About: {access.conversation.listing.title}
         </Link>

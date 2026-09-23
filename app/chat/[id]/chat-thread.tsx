@@ -85,32 +85,34 @@ export function ChatThread({
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 text-sm text-neutral-600">
-        <span>
-          Chatting with <strong>{otherUserName}</strong>
+    <div className="flex flex-1 flex-col gap-3 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100 pb-3 text-sm">
+        <span className="font-medium text-neutral-900">
+          Chatting with <strong className="text-brand-700">{otherUserName}</strong>
         </span>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1.5 text-neutral-500">
           <span
             className={`h-2 w-2 rounded-full ${otherOnline ? "bg-green-500" : "bg-neutral-300"}`}
           />
           {otherOnline ? "Online" : "Offline"}
           {connectionState !== "connected" && (
-            <span className="ml-2 text-amber-600">
+            <span className="ml-1 text-amber-600">
               ({connectionState === "connecting" ? "connecting..." : "disconnected"})
             </span>
           )}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
+      <div className="flex flex-1 flex-col gap-2 overflow-y-auto py-1">
         {messages.map((m) => {
           const isMine = m.senderId === currentUserId;
           return (
             <div
               key={m.id}
-              className={`max-w-[75%] rounded px-3 py-2 text-sm ${
-                isMine ? "self-end bg-black text-white" : "self-start bg-neutral-100"
+              className={`max-w-[75%] px-3.5 py-2 text-sm shadow-sm ${
+                isMine
+                  ? "self-end rounded-2xl rounded-br-sm bg-brand-600 text-white"
+                  : "self-start rounded-2xl rounded-bl-sm bg-neutral-100 text-neutral-800"
               }`}
             >
               {m.body}
@@ -120,14 +122,17 @@ export function ChatThread({
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-2 border-t pt-3">
+      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-neutral-100 pt-3">
         <input
-          className="flex-1 rounded border px-3 py-2"
+          className="flex-1 rounded-full border border-neutral-200 px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
         />
-        <button type="submit" className="rounded bg-black px-4 py-2 text-white">
+        <button
+          type="submit"
+          className="rounded-full bg-brand-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-brand-700"
+        >
           Send
         </button>
       </form>

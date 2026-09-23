@@ -23,14 +23,14 @@ export function ListingActions({ listingId }: { listingId: string }) {
       <button
         onClick={() => setStatus("approved")}
         disabled={loading !== null}
-        className="rounded bg-green-700 px-2 py-1 text-xs text-white disabled:opacity-50"
+        className="rounded-lg bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-green-700 disabled:opacity-50"
       >
         {loading === "approved" ? "..." : "Approve"}
       </button>
       <button
         onClick={() => setStatus("rejected")}
         disabled={loading !== null}
-        className="rounded bg-red-700 px-2 py-1 text-xs text-white disabled:opacity-50"
+        className="rounded-lg bg-red-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
       >
         {loading === "rejected" ? "..." : "Reject"}
       </button>

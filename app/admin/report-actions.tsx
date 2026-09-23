@@ -29,7 +29,7 @@ export function ReportActions({
       <button
         onClick={() => setStatus("actioned")}
         disabled={loading !== null}
-        className="rounded bg-red-700 px-2 py-1 text-xs text-white disabled:opacity-50"
+        className="rounded-lg bg-red-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
       >
         {loading === "actioned"
           ? "..."
@@ -40,7 +40,7 @@ export function ReportActions({
       <button
         onClick={() => setStatus("dismissed")}
         disabled={loading !== null}
-        className="rounded border px-2 py-1 text-xs disabled:opacity-50"
+        className="rounded-lg border border-neutral-200 px-2.5 py-1.5 text-xs font-medium text-neutral-700 transition hover:bg-neutral-50 disabled:opacity-50"
       >
         {loading === "dismissed" ? "..." : "Dismiss"}
       </button>

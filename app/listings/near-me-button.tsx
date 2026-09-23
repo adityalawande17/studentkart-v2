@@ -46,7 +46,7 @@ export function NearMeButton({ active }: { active: boolean }) {
     return (
       <button
         onClick={clearNear}
-        className="rounded-full bg-black px-3 py-1 text-sm text-white"
+        className="rounded-full bg-brand-600 px-3 py-1.5 font-medium text-white transition hover:bg-brand-700"
       >
         Near me (within {DEFAULT_RADIUS_KM}km) ×
       </button>
@@ -58,9 +58,9 @@ export function NearMeButton({ active }: { active: boolean }) {
       <button
         onClick={goNear}
         disabled={locating}
-        className="rounded-full border px-3 py-1 text-sm disabled:opacity-50"
+        className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 font-medium text-neutral-700 transition hover:bg-neutral-50 disabled:opacity-50"
       >
-        {locating ? "Locating..." : `📍 Near me (${DEFAULT_RADIUS_KM}km)`}
+        {locating ? "Locating..." : `Near me (${DEFAULT_RADIUS_KM}km)`}
       </button>
       {error && <span className="text-xs text-red-600">{error}</span>}
     </div>

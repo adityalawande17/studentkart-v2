@@ -33,7 +33,7 @@ export function ChatButton({ listingId }: { listingId: string }) {
       <button
         onClick={handleClick}
         disabled={loading}
-        className="rounded bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
+        className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
       >
         {loading ? "Starting chat..." : "Chat with seller"}
       </button>

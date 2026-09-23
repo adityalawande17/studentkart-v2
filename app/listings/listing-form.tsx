@@ -28,6 +28,10 @@ const EMPTY_VALUES: ListingFormValues = {
   photoUrls: [],
 };
 
+const inputClass =
+  "min-w-0 rounded-lg border border-neutral-200 px-3 py-2 font-normal focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100";
+const labelClass = "flex min-w-0 flex-col gap-1.5 text-sm font-medium text-neutral-700";
+
 export function ListingForm({
   initialValues,
   submitLabel,
@@ -79,114 +83,130 @@ export function ListingForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm">
-        Title
-        <input
-          className="rounded border px-3 py-2"
-          value={values.title}
-          onChange={(e) => update("title", e.target.value)}
-          required
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Description
-        <textarea
-          className="rounded border px-3 py-2"
-          value={values.description}
-          onChange={(e) => update("description", e.target.value)}
-          rows={4}
-          required
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Price (₹)
-        <input
-          type="number"
-          min="1"
-          step="1"
-          className="rounded border px-3 py-2"
-          value={values.price}
-          onChange={(e) => update("price", e.target.value)}
-          required
-        />
-      </label>
-      <div className="grid grid-cols-2 gap-4">
-        <label className="flex min-w-0 flex-col gap-1 text-sm">
-          Category
-          <select
-            className="min-w-0 rounded border px-3 py-2"
-            value={values.category}
-            onChange={(e) => update("category", e.target.value as ListingFormValues["category"])}
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+      <div className="flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <label className={labelClass}>
+          Title
+          <input
+            className={inputClass}
+            value={values.title}
+            onChange={(e) => update("title", e.target.value)}
+            required
+          />
         </label>
-        <label className="flex min-w-0 flex-col gap-1 text-sm">
-          Condition
-          <select
-            className="min-w-0 rounded border px-3 py-2"
-            value={values.condition}
-            onChange={(e) =>
-              update("condition", e.target.value as ListingFormValues["condition"])
-            }
-          >
-            {CONDITIONS.map((c) => (
-              <option key={c} value={c}>
-                {c.replace("_", " ")}
-              </option>
-            ))}
-          </select>
+        <label className={labelClass}>
+          Description
+          <textarea
+            className={inputClass}
+            value={values.description}
+            onChange={(e) => update("description", e.target.value)}
+            rows={4}
+            required
+          />
         </label>
+        <label className={labelClass}>
+          Price (₹)
+          <input
+            type="number"
+            min="1"
+            step="1"
+            className={inputClass}
+            value={values.price}
+            onChange={(e) => update("price", e.target.value)}
+            required
+          />
+        </label>
+        <div className="grid grid-cols-2 gap-4">
+          <label className={labelClass}>
+            Category
+            <select
+              className={inputClass}
+              value={values.category}
+              onChange={(e) => update("category", e.target.value as ListingFormValues["category"])}
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={labelClass}>
+            Condition
+            <select
+              className={inputClass}
+              value={values.condition}
+              onChange={(e) =>
+                update("condition", e.target.value as ListingFormValues["condition"])
+              }
+            >
+              {CONDITIONS.map((c) => (
+                <option key={c} value={c}>
+                  {c.replace("_", " ")}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <PhotoUpload
+          value={values.photoUrls}
+          onChange={(urls) => update("photoUrls", urls)}
+        />
       </div>
 
-      <PhotoUpload
-        value={values.photoUrls}
-        onChange={(urls) => update("photoUrls", urls)}
-      />
-
-      <label className="flex items-center gap-2 text-sm">
+      <label
+        className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 text-sm shadow-sm transition ${
+          values.isGraduatingSoon
+            ? "border-amber-300 bg-amber-50"
+            : "border-neutral-200 bg-white hover:bg-neutral-50"
+        }`}
+      >
         <input
           type="checkbox"
+          className="mt-0.5 h-4 w-4 accent-amber-500"
           checked={values.isGraduatingSoon}
           onChange={(e) => update("isGraduatingSoon", e.target.checked)}
         />
-        I&apos;m graduating soon — flag this as part of a move-out sale
+        <span>
+          <span className="font-medium text-neutral-900">I&apos;m graduating soon</span>
+          <br />
+          <span className="text-neutral-500">
+            Flag this as part of a move-out sale — shows up in the graduating-soon
+            spotlight on the browse page.
+          </span>
+        </span>
       </label>
 
-      <div className="flex flex-col gap-2 rounded border p-3">
+      <div className="flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Location</span>
+          <span className="text-sm font-medium text-neutral-700">Location</span>
           <button
             type="button"
             onClick={useCurrentLocation}
             disabled={locating}
-            className="text-sm underline disabled:opacity-50"
+            className="text-sm font-medium text-brand-700 hover:underline disabled:opacity-50"
           >
             {locating ? "Locating..." : "Use my current location"}
           </button>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <label className="flex min-w-0 flex-col gap-1 text-sm">
+          <label className={labelClass}>
             Latitude
             <input
               type="number"
               step="any"
-              className="min-w-0 rounded border px-3 py-2"
+              className={inputClass}
               value={values.lat}
               onChange={(e) => update("lat", e.target.value)}
               required
             />
           </label>
-          <label className="flex min-w-0 flex-col gap-1 text-sm">
+          <label className={labelClass}>
             Longitude
             <input
               type="number"
               step="any"
-              className="min-w-0 rounded border px-3 py-2"
+              className={inputClass}
               value={values.lng}
               onChange={(e) => update("lng", e.target.value)}
               required
@@ -199,7 +219,7 @@ export function ListingForm({
       <button
         type="submit"
         disabled={submitting}
-        className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+        className="rounded-lg bg-brand-600 px-3 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
       >
         {submitting ? "Saving..." : submitLabel}
       </button>
