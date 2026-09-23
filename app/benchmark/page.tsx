@@ -24,7 +24,7 @@ export default async function BenchmarkPage() {
   const speedupX = naiveWallMs / indexedWallMs;
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-1 flex-col gap-8 px-4 py-10">
+    <main className="mx-auto flex w-full min-w-0 max-w-3xl flex-1 flex-col gap-8 px-4 py-10">
       <div>
         <h1 className="text-2xl font-semibold">Geospatial search benchmark</h1>
         <p className="mt-2 text-sm text-neutral-600">
