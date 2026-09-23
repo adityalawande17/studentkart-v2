@@ -2,16 +2,15 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { validateListingInput } from "@/lib/listings";
+import { getListingForViewer } from "@/lib/listings-query";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const listing = await prisma.listing.findUnique({
-    where: { id },
-    include: { photos: true, seller: { select: { name: true } } },
-  });
+  const session = await auth();
+  const listing = await getListingForViewer(id, session?.user?.id, session?.user?.isAdmin ?? false);
 
   if (!listing) {
     return NextResponse.json({ error: "Listing not found" }, { status: 404 });

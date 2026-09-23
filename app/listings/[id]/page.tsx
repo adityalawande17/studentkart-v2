@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { getListingForViewer } from "@/lib/listings-query";
 import { DeleteButton } from "./delete-button";
 import { ChatButton } from "./chat-button";
+import { ReportButton } from "./report-button";
 
 export default async function ListingDetailPage({
   params,
@@ -11,13 +12,8 @@ export default async function ListingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [session, listing] = await Promise.all([
-    auth(),
-    prisma.listing.findUnique({
-      where: { id },
-      include: { photos: true, seller: { select: { id: true, name: true } } },
-    }),
-  ]);
+  const session = await auth();
+  const listing = await getListingForViewer(id, session?.user?.id, session?.user?.isAdmin ?? false);
 
   if (!listing) {
     notFound();
@@ -30,6 +26,16 @@ export default async function ListingDetailPage({
       <Link href="/listings" className="text-sm underline">
         ← Back to listings
       </Link>
+
+      {listing.moderationStatus !== "approved" && isOwner && (
+        <div className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          {listing.moderationStatus === "pending"
+            ? "This listing is pending review and isn't visible to other users yet."
+            : `This listing was rejected and isn't visible to other users.${
+                listing.moderationReason ? ` Reason: ${listing.moderationReason}` : ""
+              }`}
+        </div>
+      )}
 
       {listing.photos.length > 0 ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -64,7 +70,12 @@ export default async function ListingDetailPage({
         <p className="text-sm text-neutral-500">Listed by {listing.seller.name}</p>
       </div>
 
-      {session?.user && !isOwner && <ChatButton listingId={listing.id} />}
+      {session?.user && !isOwner && (
+        <div className="flex items-center gap-3">
+          <ChatButton listingId={listing.id} />
+          <ReportButton targetType="listing" targetId={listing.id} />
+        </div>
+      )}
 
       {isOwner && (
         <div className="flex gap-2 border-t pt-4">

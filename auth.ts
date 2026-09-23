@@ -27,6 +27,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role,
+          isAdmin: user.isAdmin,
         };
       },
     }),
@@ -35,6 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     jwt: async ({ token, user }) => {
       if (user) {
         token.role = user.role;
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
@@ -42,6 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user) {
         session.user.id = token.sub as string;
         session.user.role = token.role as string;
+        session.user.isAdmin = token.isAdmin as boolean;
       }
       return session;
     },

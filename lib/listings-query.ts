@@ -20,6 +20,7 @@ export async function queryListings(params: QueryListingsParams) {
     const rows = await prisma.listing.findMany({
       where: {
         id: { in: ids },
+        moderationStatus: "approved",
         ...(params.graduatingSoon ? { isGraduatingSoon: true } : {}),
       },
       include: { photos: true, seller: { select: { name: true } } },
@@ -33,11 +34,34 @@ export async function queryListings(params: QueryListingsParams) {
   }
 
   const rows = await prisma.listing.findMany({
-    where: params.graduatingSoon ? { isGraduatingSoon: true } : undefined,
+    where: {
+      moderationStatus: "approved",
+      ...(params.graduatingSoon ? { isGraduatingSoon: true } : {}),
+    },
     include: { photos: true, seller: { select: { name: true } } },
     orderBy: { createdAt: "desc" },
     take: params.take,
   });
 
   return rows.map((l) => ({ ...l, distanceM: null as number | null }));
+}
+
+/**
+ * Single-listing lookup that respects moderation: a pending/rejected
+ * listing is only visible to its own seller or an admin, not the public.
+ */
+export async function getListingForViewer(
+  id: string,
+  viewerId: string | undefined,
+  viewerIsAdmin: boolean
+) {
+  const listing = await prisma.listing.findUnique({
+    where: { id },
+    include: { photos: true, seller: { select: { id: true, name: true } } },
+  });
+
+  if (!listing) return null;
+  if (listing.moderationStatus === "approved") return listing;
+  if (viewerIsAdmin || listing.sellerId === viewerId) return listing;
+  return null;
 }
