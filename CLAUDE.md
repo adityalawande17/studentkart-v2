@@ -24,10 +24,11 @@ A campus-local marketplace for students (5km radius, graduating-soon flag, separ
 - **ORM:** Prisma for everything except geospatial queries. Prisma doesn't model PostGIS geography types well, so radius/distance queries go through raw SQL via `prisma.$queryRaw` (`ST_DWithin` / `ST_Distance`). Don't fight Prisma into doing this — raw SQL for geo, Prisma for the rest.
 - **Auth:** Auth.js (NextAuth) with the Credentials provider + Prisma adapter. A `role` field on the User model (`student | tenant | hostel_owner | mess_owner`) drives RBAC — one auth system, not four.
 - **File storage:** Supabase Storage for listing photos.
-- **Real-time chat:** a standalone Node.js + Socket.IO service, separate from the Next.js app. Reason: Next.js API routes on Vercel run as serverless functions and can't hold a persistent WebSocket connection. The chat service authenticates sockets against the same session/DB, persists messages to Postgres, and deploys separately (Railway or Fly.io) from the Next.js app (Vercel).
+- **Real-time chat:** a standalone Node.js + Socket.IO service, separate from the Next.js app. Reason: Next.js API routes on Vercel run as serverless functions and can't hold a persistent WebSocket connection. The chat service authenticates sockets against the same session/DB, persists messages to Postgres, and deploys separately (Render) from the Next.js app (Vercel).
   - _Alternative considered:_ Supabase Realtime (Postgres-replication-based, no separate service to run). Less infra, but hand-rolling the socket server (auth, reconnection, persistence) is more representative of what "a real-time layer done properly" is meant to prove for this portfolio piece. Default to self-hosted Socket.IO; fall back to Supabase Realtime only if the timeline gets tight.
 - **Styling:** Tailwind CSS.
-- **Deployment:** Next.js app → Vercel. Socket.IO chat service → Railway or Fly.io. Postgres/PostGIS/storage → Supabase.
+- **Deployment:** Next.js app → Vercel. Socket.IO chat service → Render (free web service). Postgres/PostGIS/storage → Supabase.
+  - _Why Render over Railway/Fly.io:_ CLAUDE.md originally named Railway or Fly.io, but neither has an actual ongoing free tier — Railway's is a 30-day trial, Fly.io's is 7 days or 2 VM-hours, both requiring a card afterward. Render's free web service tier (750 instance-hours/month, enough for one always-on service) is genuinely free indefinitely, no card required. Tradeoff: it spins down after 15 minutes idle and takes ~1 minute to wake on the next request — acceptable for a portfolio demo, since only the chat feature is affected (the Next.js app on Vercel has no such delay) and a reviewer's first click just eats a short one-time wait.
 
 ## Phases
 
@@ -85,7 +86,7 @@ Work through these in order. Each phase should be demoable on its own before mov
 
 ### Phase 6 — Deployment & demo readiness
 - Realistic seeded demo dataset (listings, users, chat history) so reviewers can interact without setup
-- Confirm Vercel (Next.js) and Railway/Fly.io (Socket.IO) are both wired to the same Supabase Postgres, env vars/secrets set in both places
+- Confirm Vercel (Next.js) and Render (Socket.IO) are both wired to the same Supabase Postgres, env vars/secrets set in both places
 - README documenting the two load-bearing pieces explicitly (PostGIS query + `/benchmark` page, chat architecture), linking directly to the live `/benchmark` page rather than reproduction steps
 - **Done when:** someone with no context can open the deployed link and see geospatial search and chat both working within a minute.
 
