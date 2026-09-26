@@ -12,9 +12,10 @@ export default async function BenchmarkPage() {
     timedRuns,
     indexedWallMs,
     indexedCount,
-    explain,
+    indexedExplain,
     naiveWallMs,
     naiveCount,
+    naiveExplain,
     scannedCount,
     wronglyExcluded,
     wronglyIncluded,
@@ -46,16 +47,16 @@ export default async function BenchmarkPage() {
             {indexedCount.toLocaleString()} listings matched
           </p>
           <div className="mt-2 border-t border-neutral-100 pt-2 text-xs text-neutral-500">
-            <p>Postgres execution time: {explain.executionTimeMs.toFixed(2)} ms</p>
+            <p>Postgres execution time: {indexedExplain.executionTimeMs.toFixed(2)} ms</p>
             <p>
               Query plan:{" "}
-              {explain.usedIndex ? (
+              {indexedExplain.usedIndex ? (
                 <span className="text-green-700">
-                  ✓ Index Scan using &quot;{explain.indexName}&quot;
+                  ✓ Index Scan using &quot;{indexedExplain.indexName}&quot;
                 </span>
               ) : (
                 <span className="text-red-700">
-                  ✗ no index used ({explain.nodeType})
+                  ✗ no index used ({indexedExplain.nodeType})
                 </span>
               )}
             </p>
@@ -69,19 +70,34 @@ export default async function BenchmarkPage() {
             {naiveCount.toLocaleString()} listings matched
           </p>
           <div className="mt-2 border-t border-neutral-100 pt-2 text-xs text-neutral-500">
-            <p>Fetched all {scannedCount.toLocaleString()} rows, no spatial index</p>
+            <p>Postgres execution time: {naiveExplain.executionTimeMs.toFixed(2)} ms</p>
+            <p className="text-red-700">✗ no index used ({naiveExplain.nodeType})</p>
+            <p className="mt-1">Fetched all {scannedCount.toLocaleString()} rows, no spatial index</p>
             <p>Distance: unweighted lat/lng degree difference (no cos(lat) correction)</p>
           </div>
         </div>
       </section>
 
-      <p className="text-sm text-neutral-600">
-        {speedupX >= 1
-          ? `The indexed query was ${speedupX.toFixed(1)}x faster.`
-          : `At this dataset size the wall-clock gap is small (${speedupX.toFixed(
-              2
-            )}x) — the index's advantage grows as the table does; the correctness gap below does not depend on scale.`}
-      </p>
+      <div className="flex flex-col gap-1 text-sm text-neutral-600">
+        <p>
+          {speedupX >= 1
+            ? `End-to-end, the indexed query was ${speedupX.toFixed(1)}x faster.`
+            : `End-to-end, the wall-clock gap is small (${speedupX.toFixed(2)}x) at this
+              dataset size.`}
+        </p>
+        <p>
+          The two Postgres execution times above aren&apos;t directly comparable — the
+          naive query&apos;s {naiveExplain.executionTimeMs.toFixed(2)}ms only reflects an
+          unfiltered fetch of raw columns; the radius filter, distance math, and sort
+          all happen afterward in application code, uncounted here (and get the wrong
+          answer at the boundary — see below). The indexed query does that entire job —
+          filter, real geodesic distance, sort — inside Postgres, in{" "}
+          {indexedExplain.executionTimeMs.toFixed(2)}ms, before a row leaves the
+          database. That's the trade the index is actually making: more work done
+          correctly, in one place, instead of shipping every row to the app to be
+          filtered by hand.
+        </p>
+      </div>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-neutral-900">

@@ -89,3 +89,27 @@ export async function explainNearbyQuery(lat: number, lng: number, radiusMeters:
     nodeType: indexScan?.["Node Type"] ?? plan.Plan["Node Type"] ?? null,
   };
 }
+
+/**
+ * Same EXPLAIN ANALYZE treatment for the naive path's actual query (an
+ * unfiltered full-column fetch — the distance math and radius filter happen
+ * in JS afterward). This isolates Postgres's own execution time from the
+ * network/serialization cost that dominates the wall-clock comparison, so
+ * the index's real benefit is visible even when both queries' round trips
+ * look similar.
+ */
+export async function explainNaiveFetchQuery() {
+  const rows = await prisma.$queryRaw<{ "QUERY PLAN": [{ Plan: PlanNode; "Execution Time": number }] }[]>`
+    EXPLAIN (ANALYZE, FORMAT JSON)
+    SELECT id, lat, lng FROM "Listing"
+  `;
+
+  const plan = rows[0]["QUERY PLAN"][0];
+
+  return {
+    executionTimeMs: plan["Execution Time"],
+    usedIndex: false,
+    indexName: null,
+    nodeType: plan.Plan["Node Type"] ?? null,
+  };
+}

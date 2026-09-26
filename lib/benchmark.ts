@@ -1,6 +1,12 @@
 import "server-only";
 import { prisma } from "./prisma";
-import { findNearbyListingIds, naiveDistanceKm, explainNearbyQuery, type NearbyRow } from "./geo";
+import {
+  findNearbyListingIds,
+  naiveDistanceKm,
+  explainNearbyQuery,
+  explainNaiveFetchQuery,
+  type NearbyRow,
+} from "./geo";
 import { CAMPUS_LAT, CAMPUS_LNG } from "./campus";
 import { DEFAULT_RADIUS_KM } from "./listings";
 
@@ -46,7 +52,8 @@ export async function runGeoBenchmark() {
     indexedTimes.push(performance.now() - start);
   }
 
-  const explain = await explainNearbyQuery(CAMPUS_LAT, CAMPUS_LNG, radiusMeters);
+  const indexedExplain = await explainNearbyQuery(CAMPUS_LAT, CAMPUS_LNG, radiusMeters);
+  const naiveExplain = await explainNaiveFetchQuery();
 
   const naiveTimes: number[] = [];
   let naiveResults: NaiveRow[] = [];
@@ -88,10 +95,11 @@ export async function runGeoBenchmark() {
     indexedWallMs,
     indexedTimes,
     indexedCount: indexedResults.length,
-    explain,
+    indexedExplain,
     naiveWallMs,
     naiveTimes,
     naiveCount: naiveResults.length,
+    naiveExplain,
     scannedCount: allListings.length,
     wronglyExcluded,
     wronglyIncluded,
